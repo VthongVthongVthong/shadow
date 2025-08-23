@@ -1,0 +1,11 @@
+[General]
+skip-proxy = 192.168.0.0/16, 10.0.0.0/8, localhost
+
+[Proxy]
+# nếu không muốn proxy ra ngoài thì có thể để trống
+
+[Script]
+# chưa cần script, chỉ bật MITM để log
+
+[MITM]
+hostname = %APPEND% *.widgetable.com, api.revenuecat.com
