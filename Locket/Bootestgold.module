@@ -1,16 +1,18 @@
-#!name=Locket Gold 🏅
+#!name=Locket Gold TEST 🏅
 #!desc=Mở khoá premium cho ứng dụng Locket Widget 
 #!version= 9
 
-[General]
-user-agent = Locket/1.0.0 (iPhone; iOS 26; Scale/3.00)
-
 [Script]
+# ～ Egern transfer to Shadowrocket & Surge & LanceX
+revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/js/Locket_Ohoang7.js, requires-body=true, max-size=-1, timeout=60
 
-# ~ Enhanced for Shadowrocket, Surge, & LanceX
-revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/Locket/Locket.js, requires-body=true, max-size=-1, timeout=120
-deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/Locket/deleteheader.js, timeout=120
+deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/module/deleteHeader.js, timeout=60
+
+# Runs forceGold.js on RevenueCat responses (adjust type if needed)
+forceGold = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^\/]+$), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/Locket/forceGold.js, requires-body=true, max-size=-1, timeout=120
 
 [MITM]
-hostname = api.revenuecat.com, raw.githubusercontent.com
-# 👤 Author: Nightmarket Server  
+hostname = %APPEND% api.revenuecat.com
+Beta
+0 / 0
+used queries
