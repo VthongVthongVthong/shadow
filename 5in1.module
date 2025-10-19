@@ -1,5 +1,5 @@
-#!name=Nightmarket All-in-One — Media Premium 2025
-#!desc=YouTube Adblock + PiP/Background, SoundCloudGo patch, Spotify premium, Truecaller premium, Locket Gold.
+#!name=Nightmarket All-in-One — Media Premium 2025 (with LocketGold Free)
+#!desc=Gộp: YouTube Adblock + PiP/Background, SoundCloudGo patch, Spotify partial premium, Truecaller premium, LocketGold Free. Yêu cầu bật MITM/SSL & QUIC protection nếu cần.
 #!tag=YouTube,SoundCloud,Spotify,Truecaller,Locket,Adblock,PiP
 #!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
 # 👤 Origin authors: @DivineEngine, @app2smile, @Maasea, @Marol62926, little34306, Nightmarket Server, @ddgksf2013, @deezertidal
@@ -51,14 +51,15 @@ spotify-proto = type=http-response,pattern=^https:\/\/spclient\.wg\.spotify\.com
 Truecaller = type=http-response,pattern=^https://premium-(.+)\.truecaller\.com/v\d/(subscriptions|products/apple),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/NightmarketServer/Shadowrocket-Module/refs/heads/main/TCPV.js
 
 # -------------------------
-# Locket Gold 🏅 - NightmarketServer
+# LocketGold Free (re-added)
 # -------------------------
-[General]
-user-agent = Locket/1.0.0 (iPhone; iOS 26; Scale/3.00)
+#!name=LocketGold Free
 
-# revenuecat response hook + deleteHeader for requests
-revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/Locket.js, requires-body=true, max-size=-1, timeout=120
-deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/deleteheader.js, timeout=120
+[Script]
+# ～ Egern transfer to Shadowrocket & Surge & LanceX
+revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/js/Locket_Ohoang7.js, requires-body=true, max-size=-1, timeout=60
+
+deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/VthongVthongVthong/shadow/main/module/deleteHeader.js, timeout=60
 
 # -------------------------
 # MITM / Hostnames (gộp)
@@ -72,7 +73,8 @@ hostname = %APPEND% -redirector*.googlevideo.com,*.googlevideo.com,www.youtube.c
 # -------------------------
 # • Bật MITM / SSL proxy và cho phép hostname raw.githubusercontent.com, spclient.wg.spotify.com, api-mobile.soundcloud.com, youtubei.googleapis.com, googlevideo.com, premium*.truecaller.com, api.revenuecat.com.
 # • Một số script yêu cầu bộ đệm lớn (max-size=-1) hoặc timeout cao => kiểm tra timeout trong app nếu script bị lỗi.
-# • QUIC: nếu app/thiết lập mạng của bạn hỗ trợ QUIC protection/QUIC passthrough, bật nó để tránh các request UDP bypass. (Bạn đã đưa phần REJECT cho UDP googlevideo / youtubei ở đầu.)
-# • Luôn kiểm tra script-path URL (raw.githubusercontent.com) vẫn tồn tại; nếu gặp lỗi 404 hãy báo mình để cập nhật đường dẫn script mới.
+# • QUIC: nếu app/thiết lập mạng của bạn hỗ trợ QUIC protection/QUIC passthrough, bật nó để tránh các request UDP bypass. (Bạn đã có phần REJECT cho UDP googlevideo / youtubei.)
+# • Mình đã thêm LocketGold Free với 2 script-path theo bạn cung cấp.
+# • Nếu bạn muốn mình đổi `script-path` thành repo khác, hoặc comment (“disable”) tạm module Locket khi cần — báo mình.
 
-# End of Nightmarket All-in-One
+# End of Nightmarket All-in-One (with LocketGold Free)
