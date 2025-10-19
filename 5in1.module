@@ -73,7 +73,6 @@ hostname = %APPEND% -redirector*.googlevideo.com,*.googlevideo.com,www.youtube.c
 # • Bật MITM / SSL proxy và cho phép hostname raw.githubusercontent.com, spclient.wg.spotify.com, api-mobile.soundcloud.com, youtubei.googleapis.com, googlevideo.com, premium*.truecaller.com, api.revenuecat.com.
 # • Một số script yêu cầu bộ đệm lớn (max-size=-1) hoặc timeout cao => kiểm tra timeout trong app nếu script bị lỗi.
 # • QUIC: nếu app/thiết lập mạng của bạn hỗ trợ QUIC protection/QUIC passthrough, bật nó để tránh các request UDP bypass. (Bạn đã đưa phần REJECT cho UDP googlevideo / youtubei ở đầu.)
-# • Nếu cần mình có thể tách/comment phần nào bạn muốn bật/tắt (ví dụ: disable Spotify hoặc Truecaller) — nhưng bạn yêu cầu gộp, nên mình để tất cả active.
 # • Luôn kiểm tra script-path URL (raw.githubusercontent.com) vẫn tồn tại; nếu gặp lỗi 404 hãy báo mình để cập nhật đường dẫn script mới.
 
 # End of Nightmarket All-in-One
