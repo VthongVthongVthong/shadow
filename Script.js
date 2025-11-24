@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name         RoX Ultimate
+// @namespace    https://www.rophim.li/
+// @version      2.1
+// @description  Ultimate patch for RoPhim: works in VPN App and in-browser userscript
+// @author       anhwaivo, hth4nh, dabeecao, hscavn, hiepkimcdtk55
+// @match        https://www.rophim.li/*
+// @run-at       document-start
+// @grant        none
+// ==/UserScript==
+
+/* ---------------------------
+   SHADOWROCKET / SURGE / ... PATCH
+   --------------------------- */
 if (typeof $response !== 'undefined' && typeof $done === 'function') {
   let b = $response.body;
   if (b) {
