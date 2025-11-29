@@ -1,0 +1,188 @@
+(function () {
+  const SEL_CAPTCHA_WRAPPER = "#captcha-html-wrapper";
+  const SEL_ADVERTISE_WRAPPER = "#advertise-html-wrapper";
+  const SEL_TIMEOUT_ALERT = ".time-out-alert";
+  const SEL_MODAL_REPORT = "#modal-report";
+  const MESSAGE_CLEANER_DONE = "[Cleaner] Đã xóa xong!";
+  const SITE_TITLE = ""; 
+  const BR_HTML = "<br><br>";
+  const FORM_ID = "main-form";
+  const FORM_METHOD = "post";
+  const RECAPTCHA_WRAPPER_ID = "recaptcha";
+  const RECAPTCHA_CLASS = "g-recaptcha";
+  const RECAPTCHA_CALLBACK = "recaptcha_callback";
+  const FIELD_ALIAS = "alias";
+  const CONTINUE_TEXT = "Click vào đây để tiếp tục";
+  const CONTINUE_BTN_CLASS = "btn btn-success disabled get-link";
+  const DISCORD_TEXT = "Click vào đây để vô Discord";
+  const DISCORD_BTN_CLASS = "btn btn-success";
+  const DISCORD_URL = "https://discord.gg/NightMarketServer";
+
+  // Helper functions để thay thế jQuery
+  function $(selector) {
+    const elements = document.querySelectorAll(selector);
+    return {
+      length: elements.length,
+      get: (index) => elements[index],
+      first: () => elements[0],
+      forEach: (callback) => elements.forEach(callback),
+      remove: () => elements.forEach(el => el.remove()),
+      empty: () => elements.forEach(el => el.innerHTML = ''),
+      append: (...items) => {
+        elements.forEach(el => {
+          items.forEach(item => {
+            if (typeof item === 'string') {
+              el.insertAdjacentHTML('beforeend', item);
+            } else if (item && item.element) {
+              el.appendChild(item.element);
+            }
+          });
+        });
+      },
+      data: (key) => {
+        return elements[0] ? elements[0].getAttribute('data-' + key) : null;
+      },
+      find: (subselector) => {
+        const found = elements[0] ? elements[0].querySelectorAll(subselector) : [];
+        return {
+          remove: () => found.forEach(el => el.remove())
+        };
+      }
+    };
+  }
+
+  function createElement(tag, attrs = {}, content = '') {
+    const el = document.createElement(tag);
+    Object.keys(attrs).forEach(key => {
+      if (key === 'class') {
+        el.className = attrs[key];
+      } else if (key === 'style') {
+        el.style.cssText = attrs[key];
+      } else if (key.startsWith('data-')) {
+        el.setAttribute(key, attrs[key]);
+      } else {
+        el[key] = attrs[key];
+      }
+    });
+    if (content) {
+      el.innerHTML = content;
+    }
+    return {
+      element: el,
+      html: (html) => { el.innerHTML = html; return { element: el }; },
+      val: (value) => { 
+        if (value !== undefined) {
+          el.value = value; 
+          return { element: el };
+        }
+        return el.value;
+      },
+      data: (key, value) => {
+        if (value !== undefined) {
+          el.setAttribute('data-' + key, value);
+        }
+        return el.getAttribute('data-' + key);
+      },
+      append: (...items) => {
+        items.forEach(item => {
+          if (typeof item === 'string') {
+            el.insertAdjacentHTML('beforeend', item);
+          } else if (item && item.element) {
+            el.appendChild(item.element);
+          }
+        });
+        return { element: el };
+      }
+    };
+  }
+
+  function initCaptchaUI() {
+    const captchaWrapper = document.querySelector(SEL_CAPTCHA_WRAPPER);
+    if (!captchaWrapper) {
+      console.error("[Bypass] Không tìm thấy captcha wrapper");
+      return;
+    }
+
+    const aliasValue = captchaWrapper.getAttribute('data-alias') || "";
+    
+    const title = createElement('h4', {}, SITE_TITLE);
+    const marginDiv = createElement('div', { style: "margin-bottom:10px" });
+    const form = createElement('form', { id: FORM_ID, method: FORM_METHOD });
+    const recaptchaHolder = createElement('div', {
+      id: RECAPTCHA_WRAPPER_ID,
+      class: RECAPTCHA_CLASS,
+      'data-callback': RECAPTCHA_CALLBACK
+    });
+    const hiddenAlias = createElement('input', {
+      type: "hidden",
+      id: FIELD_ALIAS,
+      name: FIELD_ALIAS
+    });
+    hiddenAlias.val(aliasValue);
+    
+    const group = createElement('div', { class: "form-group" });
+    const continueBtn = createElement('a', {
+      class: CONTINUE_BTN_CLASS,
+      target: "_blank",
+      rel: "noopener noreferrer nofollow",
+      href: "#"
+    }, CONTINUE_TEXT);
+    const discordBtn = createElement('a', {
+      class: DISCORD_BTN_CLASS,
+      href: DISCORD_URL,
+      target: "_blank",
+      rel: "noopener noreferrer nofollow"
+    }, DISCORD_TEXT);
+    
+    group.append(continueBtn, BR_HTML, discordBtn);
+    form.append(recaptchaHolder, hiddenAlias, group);
+    marginDiv.append(form);
+    
+    captchaWrapper.innerHTML = '';
+    captchaWrapper.appendChild(title.element);
+    captchaWrapper.appendChild(marginDiv.element);
+    
+    // Xóa loader
+    const loader = captchaWrapper.querySelector('.loader');
+    if (loader) loader.remove();
+    
+    // Xóa advertise wrapper
+    const advertiseWrapper = document.querySelector(SEL_ADVERTISE_WRAPPER);
+    if (advertiseWrapper) advertiseWrapper.remove();
+    
+    console.log(MESSAGE_CLEANER_DONE);
+    
+    const waitAndRender = () => {
+      if (typeof grecaptcha !== "undefined" && typeof recaptcha_key !== "undefined") {
+        try {
+          const widgetId = grecaptcha.render(RECAPTCHA_WRAPPER_ID, {
+            sitekey: recaptcha_key
+          });
+          recaptchaHolder.element.setAttribute('data-recaptcha-id', widgetId);
+        } catch (e) {
+          console.error("[Bypass] Lỗi khi render recaptcha:", e);
+        }
+      } else {
+        setTimeout(waitAndRender, 1000);
+      }
+    };
+    waitAndRender();
+  }
+
+  (function startupCheckAndRun() {
+    const captchaWrapper = document.querySelector("#captcha-html-wrapper");
+    const advertiseWrapper = document.querySelector("#advertise-html-wrapper");
+    const timeoutAlert = document.querySelector(".time-out-alert");
+    const modalReport = document.querySelector("#modal-report");
+    
+    if (captchaWrapper || advertiseWrapper || timeoutAlert || modalReport) {
+      if (captchaWrapper) captchaWrapper.innerHTML = '';
+      if (advertiseWrapper) advertiseWrapper.innerHTML = '';
+      if (timeoutAlert) timeoutAlert.remove();
+      if (modalReport) modalReport.innerHTML = '';
+      console.log(MESSAGE_CLEANER_DONE);
+    }
+  })();
+  
+  initCaptchaUI();
+})();
