@@ -1,0 +1,221 @@
+(function () {
+  const SEL_CAPTCHA_WRAPPER = "#captcha-html-wrapper";
+  const SEL_ADVERTISE_WRAPPER = "#advertise-html-wrapper";
+  const SEL_TIMEOUT_ALERT = ".time-out-alert";
+  const SEL_MODAL_REPORT = "#modal-report";
+  const MESSAGE_CLEANER_DONE = "[Cleaner] Đã xóa xong!";
+  const SITE_TITLE = ""; 
+  const BR_HTML = "<br><br>";
+  const FORM_ID = "main-form";
+  const FORM_METHOD = "post";
+  const RECAPTCHA_WRAPPER_ID = "recaptcha";
+  const RECAPTCHA_CLASS = "g-recaptcha";
+  const RECAPTCHA_CALLBACK = "recaptcha_callback";
+  const FIELD_ALIAS = "alias";
+  const CONTINUE_TEXT = "Click vào đây để tiếp tục";
+  const CONTINUE_BTN_CLASS = "btn btn-success disabled get-link";
+  const DISCORD_TEXT = "Click vào đây để vô Discord";
+  const DISCORD_BTN_CLASS = "btn btn-success";
+  const DISCORD_URL = "https://discord.gg/NightMarketServer";
+
+  // Helper functions để thay thế jQuery
+  function $(selector) {
+    const elements = document.querySelectorAll(selector);
+    return {
+      length: elements.length,
+      get: (index) => elements[index],
+      first: () => elements[0],
+      forEach: (callback) => elements.forEach(callback),
+      remove: () => elements.forEach(el => el.remove()),
+      empty: () => elements.forEach(el => el.innerHTML = ''),
+      append: (...items) => {
+        elements.forEach(el => {
+          items.forEach(item => {
+            if (typeof item === 'string') {
+              el.insertAdjacentHTML('beforeend', item);
+            } else if (item && item.element) {
+              el.appendChild(item.element);
+            }
+          });
+        });
+      },
+      data: (key) => {
+        return elements[0] ? elements[0].getAttribute('data-' + key) : null;
+      },
+      find: (subselector) => {
+        const found = elements[0] ? elements[0].querySelectorAll(subselector) : [];
+        return {
+          remove: () => found.forEach(el => el.remove())
+        };
+      }
+    };
+  }
+
+  function createElement(tag, attrs = {}, content = '') {
+    const el = document.createElement(tag);
+    Object.keys(attrs).forEach(key => {
+      if (key === 'class') {
+        el.className = attrs[key];
+      } else if (key === 'style') {
+        el.style.cssText = attrs[key];
+      } else if (key.startsWith('data-')) {
+        el.setAttribute(key, attrs[key]);
+      } else {
+        el[key] = attrs[key];
+      }
+    });
+    if (content) {
+      el.innerHTML = content;
+    }
+    return {
+      element: el,
+      html: (html) => { el.innerHTML = html; return { element: el }; },
+      val: (value) => { 
+        if (value !== undefined) {
+          el.value = value; 
+          return { element: el };
+        }
+        return el.value;
+      },
+      data: (key, value) => {
+        if (value !== undefined) {
+          el.setAttribute('data-' + key, value);
+        }
+        return el.getAttribute('data-' + key);
+      },
+      append: (...items) => {
+        items.forEach(item => {
+          if (typeof item === 'string') {
+            el.insertAdjacentHTML('beforeend', item);
+          } else if (item && item.element) {
+            el.appendChild(item.element);
+          }
+        });
+        return { element: el };
+      }
+    };
+  }
+
+  function initCaptchaUI() {
+    console.log("[Bypass] Bắt đầu init UI...");
+    const captchaWrapper = document.querySelector(SEL_CAPTCHA_WRAPPER);
+    if (!captchaWrapper) {
+      console.error("[Bypass] Không tìm thấy captcha wrapper");
+      return;
+    }
+
+    const aliasValue = captchaWrapper.getAttribute('data-alias') || "";
+    console.log("[Bypass] Alias value:", aliasValue);
+    
+    // Xóa nội dung cũ
+    captchaWrapper.innerHTML = '';
+    
+    // Tạo các elements
+    const title = document.createElement('h4');
+    title.innerHTML = SITE_TITLE;
+    
+    const marginDiv = document.createElement('div');
+    marginDiv.style.cssText = "margin-bottom:10px";
+    
+    const form = document.createElement('form');
+    form.id = FORM_ID;
+    form.method = FORM_METHOD;
+    
+    const recaptchaHolder = document.createElement('div');
+    recaptchaHolder.id = RECAPTCHA_WRAPPER_ID;
+    recaptchaHolder.className = RECAPTCHA_CLASS;
+    recaptchaHolder.setAttribute('data-callback', RECAPTCHA_CALLBACK);
+    
+    const hiddenAlias = document.createElement('input');
+    hiddenAlias.type = "hidden";
+    hiddenAlias.id = FIELD_ALIAS;
+    hiddenAlias.name = FIELD_ALIAS;
+    hiddenAlias.value = aliasValue;
+    
+    const group = document.createElement('div');
+    group.className = "form-group";
+    
+    const continueBtn = document.createElement('a');
+    continueBtn.className = CONTINUE_BTN_CLASS;
+    continueBtn.target = "_blank";
+    continueBtn.rel = "noopener noreferrer nofollow";
+    continueBtn.href = "#";
+    continueBtn.innerHTML = CONTINUE_TEXT;
+    
+    const discordBtn = document.createElement('a');
+    discordBtn.className = DISCORD_BTN_CLASS;
+    discordBtn.href = DISCORD_URL;
+    discordBtn.target = "_blank";
+    discordBtn.rel = "noopener noreferrer nofollow";
+    discordBtn.innerHTML = DISCORD_TEXT;
+    
+    // Append các elements
+    group.appendChild(continueBtn);
+    group.insertAdjacentHTML('beforeend', BR_HTML);
+    group.appendChild(discordBtn);
+    
+    form.appendChild(recaptchaHolder);
+    form.appendChild(hiddenAlias);
+    form.appendChild(group);
+    
+    marginDiv.appendChild(form);
+    
+    captchaWrapper.appendChild(title);
+    captchaWrapper.appendChild(marginDiv);
+    
+    // Xóa advertise wrapper
+    const advertiseWrapper = document.querySelector(SEL_ADVERTISE_WRAPPER);
+    if (advertiseWrapper) {
+      advertiseWrapper.remove();
+      console.log("[Bypass] Đã xóa advertise wrapper");
+    }
+    
+    console.log("[Bypass] UI đã được tạo, đang đợi grecaptcha...");
+    console.log(MESSAGE_CLEANER_DONE);
+    
+    // Render recaptcha
+    const waitAndRender = () => {
+      console.log("[Bypass] Đang check grecaptcha...", {
+        grecaptcha: typeof grecaptcha,
+        recaptcha_key: typeof recaptcha_key
+      });
+      
+      if (typeof grecaptcha !== "undefined" && typeof recaptcha_key !== "undefined") {
+        try {
+          console.log("[Bypass] Đang render recaptcha với key:", recaptcha_key);
+          const widgetId = grecaptcha.render(RECAPTCHA_WRAPPER_ID, {
+            sitekey: recaptcha_key
+          });
+          recaptchaHolder.setAttribute('data-recaptcha-id', widgetId);
+          console.log("[Bypass] ✅ Recaptcha đã render thành công! Widget ID:", widgetId);
+        } catch (e) {
+          console.error("[Bypass] ❌ Lỗi khi render recaptcha:", e);
+          console.error("[Bypass] Stack:", e.stack);
+        }
+      } else {
+        console.log("[Bypass] Chưa có grecaptcha hoặc recaptcha_key, đợi thêm...");
+        setTimeout(waitAndRender, 1000);
+      }
+    };
+    
+    // Đợi một chút để đảm bảo trang đã load xong
+    setTimeout(waitAndRender, 500);
+  }
+
+  (function startupCheckAndRun() {
+    const captchaWrapper = document.querySelector("#captcha-html-wrapper");
+    const advertiseWrapper = document.querySelector("#advertise-html-wrapper");
+    const timeoutAlert = document.querySelector(".time-out-alert");
+    const modalReport = document.querySelector("#modal-report");
+    
+    if (captchaWrapper || advertiseWrapper || timeoutAlert || modalReport) {
+      if (captchaWrapper) captchaWrapper.innerHTML = '';
+      if (advertiseWrapper) advertiseWrapper.innerHTML = '';
+      if (timeoutAlert) timeoutAlert.remove();
+      if (modalReport) modalReport.innerHTML = '';
+      console.log(MESSAGE_CLEANER_DONE);
+    }
+  })();
+  
+  initCaptchaUI();
+})();
