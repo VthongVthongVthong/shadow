@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bypass Link4m
 // @namespace    http://tampermonkey.net/
-// @version      1.01.3
+// @version      1.0
 // @description  Bypass https://link4m.com.
 // @author       NMS
 // @match        https://link4m.com/*
