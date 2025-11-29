@@ -1,0 +1,98 @@
+(function () {
+
+    /* ============================================================
+       SAFARI-FRIENDLY LINK4M BYPASS (Không jQuery, Không captcha)
+    ============================================================ */
+
+    if (location.hostname.includes("link4m.com")) {
+
+        // Chờ body xuất hiện
+        function waitForBody(cb) {
+            const t = setInterval(() => {
+                if (document.body) {
+                    clearInterval(t);
+                    cb();
+                }
+            }, 50);
+        }
+
+        waitForBody(() => {
+
+            // ===== HỎI XÁC NHẬN =====
+            const ok = confirm("Bạn có muốn BYPASS Link4M không?");
+            if (!ok) return;
+
+            // ===== XÓA GIAO DIỆN CŨ =====
+            let captcha = document.querySelector("#captcha-html-wrapper");
+            let ad = document.querySelector("#advertise-html-wrapper");
+            let timeoutAlert = document.querySelector(".time-out-alert");
+            let modal = document.querySelector("#modal-report");
+
+            if (captcha) captcha.innerHTML = "";
+            if (ad) ad.remove();
+            if (timeoutAlert) timeoutAlert.remove();
+            if (modal) modal.innerHTML = "";
+
+            // ===== TẠO GIAO DIỆN "TIẾP TỤC" =====
+            const wrapper = captcha || document.body;
+
+            const box = document.createElement("div");
+            box.style.padding = "20px";
+            box.style.margin = "20px auto";
+            box.style.maxWidth = "360px";
+            box.style.border = "1px solid #ccc";
+            box.style.borderRadius = "10px";
+            box.style.background = "white";
+            box.style.boxShadow = "0 3px 8px rgba(0,0,0,0.3)";
+            box.style.textAlign = "center";
+            box.style.fontFamily = "Arial";
+
+            const title = document.createElement("h3");
+            title.textContent = "Bypass hoàn tất!";
+            title.style.marginBottom = "10px";
+
+            const btn = document.createElement("a");
+            btn.textContent = "→ Click để tiếp tục";
+            btn.style.display = "inline-block";
+            btn.style.marginTop = "10px";
+            btn.style.padding = "10px 15px";
+            btn.style.background = "#28a745";
+            btn.style.color = "white";
+            btn.style.textDecoration = "none";
+            btn.style.borderRadius = "6px";
+            btn.style.fontSize = "18px";
+            btn.style.fontWeight = "bold";
+
+            // ===== LẤY LINK TIẾP THEO =====
+            // Link thường nằm trong thẻ có id="get-link", hoặc trong form POST
+            let nextURL = null;
+
+            // 1. thử lấy từ get-link
+            const getLink = document.querySelector("a.get-link");
+            if (getLink && getLink.href && getLink.href !== "#") {
+                nextURL = getLink.href;
+            }
+
+            // 2. thử lấy từ meta refresh
+            if (!nextURL) {
+                const meta = document.querySelector("meta[http-equiv='refresh']");
+                if (meta) {
+                    const m = meta.content.match(/URL=(.+)/i);
+                    if (m) nextURL = m[1];
+                }
+            }
+
+            // 3. fallback: báo cho người dùng
+            if (!nextURL) nextURL = "javascript:alert('Không tìm thấy link tiếp theo!');";
+
+            btn.href = nextURL;
+
+            box.appendChild(title);
+            box.appendChild(btn);
+            wrapper.appendChild(box);
+
+            alert("Bypass thành công! Bấm Continue để đi tiếp.");
+        });
+    }
+
+})();
