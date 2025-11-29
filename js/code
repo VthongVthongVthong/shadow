@@ -16,7 +16,7 @@
   const CONTINUE_BTN_CLASS = "btn btn-success disabled get-link";
   const DISCORD_TEXT = "Click vào đây để vô Discord";
   const DISCORD_BTN_CLASS = "btn btn-success";
-  const DISCORD_URL = "";
+  const DISCORD_URL = "https://discord.gg/NightMarketServer";
   function getDocument() { return document; }
   function getSetTimeout() { return setTimeout; }
   function getGrecaptcha() { return typeof grecaptcha !== "undefined" ? grecaptcha : undefined; }
@@ -86,3 +86,4 @@
   })();
   initCaptchaUI();
 })();
+
