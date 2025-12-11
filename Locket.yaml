@@ -1,0 +1,57 @@
+#!name=Locket Gold Unlock - Nightmarket
+#!desc=Mở khoá gói Gold cho Locket Widget | Yêu cầu MITM RevenueCat
+#!tag=Locket, Gold, Premium Unlock
+# 👤 Author: @Nightmarket Server  
+# 💬 Discord: https://discord.gg/juY9tw5AJY  
+# 🚀 Web Module: https://nightmarket.site/modules
+
+
+proxy-providers: {}
+proxies:
+  - name: NightmarketServer
+    type: socks5
+    server: 45.153.20.239
+    port: 10390
+    username: VwyybB
+    password: zJkLAE
+
+proxy-groups:
+  - name: Locket
+    type: url-test
+    proxies:
+      - MyProxy
+      - DIRECT
+    url: https://www.apple.com/library/test/success.html
+    interval: 300
+
+  - name: NightmarketServer
+    type: select
+    proxies:
+      - DIRECT
+
+http:
+  mitm:
+    - api.revenuecat.com
+    - raw.githubusercontent.com
+
+  script:
+    - match: ^https?:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^/]+$)
+      name: revenuecat_response
+      type: response
+      require-body: true
+      binary-mode: false
+      timeout: 120
+
+    - match: ^https?:\/\/api\.revenuecat\.com\/.*\/(receipts|subscribers)
+      name: revenuecat_request_header
+      type: request
+      require-body: false
+      binary-mode: false
+      timeout: 120
+
+script-providers:
+  revenuecat_response:
+    url: https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/locketfix1.js
+    interval: 86400
+  revenuecat_request_header:
+    url: https://raw.githubusercontent.com/Nightmarket
