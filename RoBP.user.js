@@ -12,8 +12,8 @@
 // @grant        none
 // @license      MIT License
 // @run-at       document-start
-// @downloadURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/RoBP.js
-// @updateURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/RoBP.js
+// @downloadURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/RoBP.user.js
+// @updateURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/RoBP.user.js
 // ==/UserScript==
 
 // NOTE: This script now requires GM_setValue/getValue for storing preferences
