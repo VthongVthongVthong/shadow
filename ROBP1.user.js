@@ -4,7 +4,6 @@
 // @version      1.0
 // @description  Bypass ads
 // @author       Night Market Server
-// @include      *
 // @match        *://*.rophim.li/*
 // @grant        GM_getValue
 // @grant        GM_setValue
