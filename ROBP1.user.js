@@ -12,6 +12,7 @@
 // @grant        none
 // @license      MIT License
 // @run-at       document-start
+// @icon         https://avatars.githubusercontent.com/u/162085003?v=4
 // @downloadURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/ROBP1.user.js
 // @updateURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/ROBP1.user.js
 // ==/UserScript==
