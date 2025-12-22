@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NIGHTMARKETSERVER - ROPHIM
 // @namespace    https://nightmarket.site/
-// @version      1.0
+// @version      1.1
 // @description  Bypass ads
 // @author       Night Market Server
 // @include      *
