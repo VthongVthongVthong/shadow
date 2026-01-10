@@ -4,8 +4,8 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.0
 // @description  NMS
-// @match        https://www.rophim.li/*
-// @match        *://*.rophim.li/*
+// @match        https://www.rophim.moi/*
+// @match        *://*.rophim.moi/*
 // @icon         https://avatars.githubusercontent.com/u/162085003?v=4
 // @downloadURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/RoCT2.user.js
 // @updateURL https://raw.githubusercontent.com/VthongVthongVthong/shadow/refs/heads/main/RoCT2.user.js
